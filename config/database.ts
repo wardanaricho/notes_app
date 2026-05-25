@@ -81,6 +81,14 @@ const dbConfig = defineConfig({
         user: env.get('DB_USER'),
         password: env.get('DB_PASSWORD'),
         database: env.get('DB_DATABASE'),
+        charset: 'utf8mb4',
+      },
+      pool: {
+        afterCreate: (conn: any, done: any) => {
+          conn.query('SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci', (err: any) => {
+            done(err, conn)
+          })
+        },
       },
       migrations: {
         naturalSort: true,

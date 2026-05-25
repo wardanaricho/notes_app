@@ -13,7 +13,8 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('categories')
         .onDelete('SET NULL')
-      table.text('content').notNullable()
+      table.string('title').notNullable()
+      table.text('body').notNullable()
       table.boolean('is_pinned').defaultTo(false)
 
       table.timestamp('created_at')
