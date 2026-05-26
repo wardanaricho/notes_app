@@ -19,7 +19,6 @@ export default class CommentsController {
     const comments = await Comment.query()
       .where('note_id', note.id)
       .preload('user')
-      .preload('note')
       .orderBy('created_at', 'asc')
 
     return response.ok(comments)

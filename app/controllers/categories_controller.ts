@@ -18,13 +18,14 @@ export default class CategoriesController {
 
   async update({ auth, params, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const category = await Category.find(params.id)
+
+    const category = await Category.query()
+      .where('id', params.id)
+      .where('user_id', user.id)
+      .first()
+
     if (!category) return response.notFound({ message: 'Kategori tidak ditemukan' })
-    if (category.userId !== user.id) {
-      return response.unauthorized({
-        message: 'Anda tidak memiliki izin untuk mengedit kategori ini',
-      })
-    }
+
     const data = await request.validateUsing(updateCategoryValidator)
     category.merge(data)
     await category.save()
@@ -33,13 +34,11 @@ export default class CategoriesController {
 
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const category = await Category.find(params.id)
+    const category = await Category.query()
+      .where('id', params.id)
+      .where('user_id', user.id)
+      .first()
     if (!category) return response.notFound({ message: 'Kategori tidak ditemukan' })
-    if (category.userId !== user.id) {
-      return response.unauthorized({
-        message: 'Anda tidak memiliki izin untuk menghapus kategori ini',
-      })
-    }
     await category.delete()
     return response.ok({ message: 'Kategori berhasil dihapus' })
   }
